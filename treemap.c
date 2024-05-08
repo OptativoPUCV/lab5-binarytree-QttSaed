@@ -45,56 +45,39 @@ TreeMap * createTreeMap(int (*lower_than) (void* key1, void* key2)) {
 }
 
 
-void insertTreeMap(TreeMap * tree, void* key, void * value) {
+void insertTreeMap(TreeMap* tree, void* key, void* value) {
     if (tree == NULL) return;
 
-    TreeNode* aux = tree->root;
+    TreeNode* newNode = createTreeNode(key, value);
+    if (tree->root == NULL) {
+        tree->root = newNode;
+        tree->current = newNode;
+        return;
+    }
+
+    TreeNode* current = tree->root;
     TreeNode* parent = NULL;
 
-    while (aux != NULL) {
-        parent = aux;
-        if (is_equal(tree, key, aux->pair->key)) {
-            tree->current = aux; // Actualizar current si la clave ya existe
+    while (current != NULL) {
+        parent = current;
+        if (is_equal(tree, key, current->pair->key)) {
+            free(newNode);  
             return;
-        }
-        if (tree->lower_than(key, aux->pair->key)) {
-            aux = aux->left;
+        } else if (tree->lower_than(key, current->pair->key)) {
+            current = current->left;
         } else {
-            aux = aux->right;
+            current = current->right;
         }
     }
 
-    TreeNode* new = createTreeNode(key, value);
-    new->parent = parent;
-
-    if (parent == NULL) {
-        tree->root = new; 
-    } else if (tree->lower_than(key, parent->pair->key)) {
-        parent->left = new;
+    newNode->parent = parent;
+    if (tree->lower_than(key, parent->pair->key)) {
+        parent->left = newNode;
     } else {
-        parent->right = new;
+        parent->right = newNode;
     }
 
-    aux = tree->root;
-    while (aux != new) {
-        parent = aux;
-        if (tree->lower_than(key, aux->pair->key)) {
-            aux = aux->left;
-        } else {
-            aux = aux->right;
-        }
-    }
-
-    if (parent != new->parent) {
-        if (tree->lower_than(key, parent->pair->key)) {
-            parent->left = new;
-        } else {
-            parent->right = new;
-        }
-        new->parent = parent;
-    }
-
-    tree->current = new; 
+    tree->current = newNode;
 }
 
 void removeNode(TreeMap * tree, TreeNode* node) {
