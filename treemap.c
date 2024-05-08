@@ -45,18 +45,18 @@ TreeMap * createTreeMap(int (*lower_than) (void* key1, void* key2)) {
 }
 
 
-void insertTreeMap(TreeMap* tree, void* key, void* value) {
+void insertTreeMap(TreeMap* tree, void* key, void* value)   {
     if (tree == NULL) return;
 
     TreeNode* newNode = createTreeNode(key, value);
     TreeNode* current = tree->root;
     TreeNode* parent = NULL;
 
-  
+    // Buscar el lugar correcto para insertar el nuevo nodo
     while (current != NULL) {
         if (is_equal(tree, key, current->pair->key)) {
-            free(newNode); 
-            tree->current = current;  
+            free(newNode);  // La clave ya existe, liberar el nodo creado
+            tree->current = current;  // Actualizar current al nodo existente
             return;
         }
 
@@ -68,7 +68,7 @@ void insertTreeMap(TreeMap* tree, void* key, void* value) {
         }
     }
 
-    
+    // Insertar el nuevo nodo
     newNode->parent = parent;
     if (parent == NULL) {
         tree->root = newNode;
@@ -78,7 +78,7 @@ void insertTreeMap(TreeMap* tree, void* key, void* value) {
         parent->right = newNode;
     }
 
-    tree->current = newNode; 
+    tree->current = newNode;  // Actualizar current al nuevo nodo insertado
 }
 
 void removeNode(TreeMap * tree, TreeNode* node) {
