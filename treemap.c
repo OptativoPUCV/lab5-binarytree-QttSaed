@@ -91,6 +91,7 @@ void insertTreeMap(TreeMap * tree, void* key, void * value) {
         }
         new->parent = parent;
     }
+    tree->current = new;
 }
 
 void removeNode(TreeMap * tree, TreeNode* node) {
